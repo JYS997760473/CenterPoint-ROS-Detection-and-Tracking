@@ -51,10 +51,6 @@ link_directories(
   3rdparty/libspconv/lib/${arch}
 )
 
-# file(GLOB_RECURSE SOURCE_FILES
-#     src/*.cu
-#     src/*.cpp
-# )
 set(CenterPoint_files
     src/centerpoint.cpp
     src/postprocess.cpp

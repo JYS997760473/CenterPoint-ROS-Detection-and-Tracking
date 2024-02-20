@@ -11,7 +11,8 @@
   <param name="score_thre" value="0.3"/>
 
   <node pkg="centerpoint_detection" type="centerpoint_detection" name="centerpoint_detection" 
-    output="screen" args="$(find centerpoint_detection)/model/rpn_centerhead_sim.plan">
+    output="screen" args="$(find centerpoint_detection)/model/rpn_centerhead_sim.plan 
+      $(find centerpoint_detection)/model/centerpoint.scn.onnx">
   </node>
 
   <node pkg="rviz" name ="nuscenes_rviz" type="rviz"

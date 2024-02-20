@@ -11,7 +11,8 @@
 int main(int argc, char** argv) {
   ros::init(argc, argv, "centerpoint_detection");
   std::string model_file = argv[1];
-  CenterPointDetection cpd(model_file);
+  std::string onnx_file = argv[2];
+  CenterPointDetection cpd(model_file, false, onnx_file);
   ros::spin();
   return 0;
 }

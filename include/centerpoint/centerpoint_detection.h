@@ -14,7 +14,7 @@
 
 class CenterPointDetection {
  public:
-  CenterPointDetection(std::string model_file, bool verbose = false);
+  CenterPointDetection(std::string model_file, bool verbose, std::string onnx_file);
   ~CenterPointDetection();
 
  private:

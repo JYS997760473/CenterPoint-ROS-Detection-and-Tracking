@@ -46,7 +46,7 @@ double getAverage(std::vector<T> const& v) {
   return std::accumulate(v.begin(), v.end(), 0.0) / v.size();
 }
 
-CenterPoint::CenterPoint(std::string modelFile, bool verbose)
+CenterPoint::CenterPoint(std::string modelFile, bool verbose, std::string onnx_file)
     : verbose_(verbose) {
   trt_ = TensorRT::load(modelFile);
   if (trt_ == nullptr) abort();
@@ -54,7 +54,7 @@ CenterPoint::CenterPoint(std::string modelFile, bool verbose)
   pre_.reset(new PreProcessCuda());
   post_.reset(new PostProcessCuda());
 
-  scn_engine_ = spconv::load_engine_from_onnx("/workspace/catkin_ws/src/centerpoint_detection/model/centerpoint.scn.onnx");
+  scn_engine_ = spconv::load_engine_from_onnx(onnx_file);
   if (scn_engine_ == nullptr) {
     printf("scn engine failed \n");
   }

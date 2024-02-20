@@ -40,7 +40,7 @@ void CenterPointDetection::GetInfo(void) {
   printf("\n");
 }
 
-CenterPointDetection::CenterPointDetection(std::string model_file, bool verbose) {
+CenterPointDetection::CenterPointDetection(std::string model_file, bool verbose, std::string onnx_file) {
   // initialize PointPillars
   ROS_INFO("Initializing CenterPoint");
   // GPU Info
@@ -48,7 +48,7 @@ CenterPointDetection::CenterPointDetection(std::string model_file, bool verbose)
 
   checkCudaErrors(cudaStreamCreate(&stream_));
 
-  centerpoint_ptr_ = std::make_unique<CenterPoint>(model_file, verbose);
+  centerpoint_ptr_ = std::make_unique<CenterPoint>(model_file, verbose, onnx_file);
   centerpoint_ptr_->prepare();
   // checkCudaErrors(cudaMalloc((void**)&d_points_, MAX_POINTS_NUM * params_.feature_num * sizeof(float)));
   ROS_INFO("Finish initializing CenterPoint");

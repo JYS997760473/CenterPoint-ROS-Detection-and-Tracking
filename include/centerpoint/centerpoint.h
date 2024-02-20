@@ -81,7 +81,7 @@ class CenterPoint {
     EventTimer timer_;
 
   public:
-    CenterPoint(std::string modelFile, bool verbose = false);
+    CenterPoint(std::string modelFile, bool verbose, std::string onnx_file);
     ~CenterPoint(void);
 
     int prepare();
