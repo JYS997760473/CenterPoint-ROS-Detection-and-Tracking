@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <arg name="nuscenes" default="1"/>
+
+  <group if="$(arg nuscenes)">
+    <param name="lidar_pointcloud_topic" value="/lidar_top"/>
+    <param name="marker_frame_id" value="lidar_top"/>
+  </group>
+
+  <param name="score_thre" value="0.3"/>
+
+  <node pkg="centerpoint_detection" type="centerpoint_detection" name="centerpoint_detection" 
+    output="screen" args="$(find centerpoint_detection)/model/rpn_centerhead_sim.plan">
+  </node>
+
+  <node pkg="rviz" name ="nuscenes_rviz" type="rviz"
+        respawn="false" output="screen" args="-d $(find centerpoint_detection)/rviz/nuscenes.rviz"/>
+
+
+</launch>
