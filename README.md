@@ -2,7 +2,7 @@
 
 ## Detection
 
-[scene1.webm](https://github.com/JYS997760473/CenterPoint-ROS-Detection-and-Tracking/assets/90627672/44d2b523-8af9-4b98-b2cb-fce8485630b6)
+[![scene1.webm](imgs/scene1_preview.png)](https://github.com/JYS997760473/CenterPoint-ROS-Detection-and-Tracking/assets/90627672/44d2b523-8af9-4b98-b2cb-fce8485630b6)
 
 ## Reference
 
