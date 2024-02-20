@@ -17,7 +17,7 @@
 
 ### Build
 
-> Please First Update your `TensorRT` `include` and `library` path in `CMakeLists.txt`'s line 32 (`TENSORRT_INCLUDE_DIRS`) and 33 (`TENSORRT_LIBRARY_DIRS`).
+- Please First Update your `TensorRT` `include` and `library` path in `CMakeLists.txt`'s line 32 (`TENSORRT_INCLUDE_DIRS`) and 33 (`TENSORRT_LIBRARY_DIRS`).
 
 ```bash
 cd <your catkin_workspace>/src
@@ -27,7 +27,7 @@ catkin build centerpoint_detection
 
 ### Perpare nuscenes rosbag
 
-> Recommand generate nuscenes rosbag from [nuscenes2bag](https://github.com/clynamen/nuscenes2bag).
+-  Recommand generate nuscenes rosbag from [nuscenes2bag](https://github.com/clynamen/nuscenes2bag).
 
 Or can download a demo rosbag from #TODO
 
