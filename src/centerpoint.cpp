@@ -57,6 +57,7 @@ CenterPoint::CenterPoint(std::string modelFile, bool verbose, std::string onnx_f
   scn_engine_ = spconv::load_engine_from_onnx(onnx_file);
   if (scn_engine_ == nullptr) {
     printf("scn engine failed \n");
+    abort();
   }
 
   checkCudaErrors(cudaMallocHost((void**)&h_detections_num_, sizeof(unsigned int)));
@@ -245,15 +246,15 @@ int CenterPoint::doinfer(void* points, unsigned int point_num, cudaStream_t stre
     }
   }
   timing_post_.push_back(timer_.stop("Decode + NMS", verbose_));
-//   if (0) {
-//     std::cout << "Detection NUM: " << nms_pred_.size() << std::endl;
-//     for (int loop = 0; loop < nms_pred_.size(); loop++) {
-//       printf("%d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f", loop, nms_pred_[loop].x, nms_pred_[loop].y, nms_pred_[loop].z,
-//              nms_pred_[loop].w, nms_pred_[loop].l, nms_pred_[loop].h, nms_pred_[loop].vx, nms_pred_[loop].vy,
-//              nms_pred_[loop].rt, nms_pred_[loop].score);
-//       std::cout << params_.class_name[nms_pred_[loop].id] << std::endl;
-//     }
-//   }
+  //   if (0) {
+  //     std::cout << "Detection NUM: " << nms_pred_.size() << std::endl;
+  //     for (int loop = 0; loop < nms_pred_.size(); loop++) {
+  //       printf("%d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f", loop, nms_pred_[loop].x, nms_pred_[loop].y, nms_pred_[loop].z,
+  //              nms_pred_[loop].w, nms_pred_[loop].l, nms_pred_[loop].h, nms_pred_[loop].vx, nms_pred_[loop].vy,
+  //              nms_pred_[loop].rt, nms_pred_[loop].score);
+  //       std::cout << params_.class_name[nms_pred_[loop].id] << std::endl;
+  //     }
+  //   }
   return 0;
 }
 

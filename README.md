@@ -29,7 +29,7 @@ catkin build centerpoint_detection
 
 -  Recommand generate nuscenes rosbag from [nuscenes2bag](https://github.com/clynamen/nuscenes2bag).
 
-Or can download a demo rosbag from #TODO
+Or can download a demo rosbag from [Google Drive](https://drive.google.com/file/d/1yPDBtFXA3paHSVg264Q_LgurgCEk4tW5/view?usp=sharing)
 
 ### Run
 
@@ -39,7 +39,7 @@ roslaunch centerpoint_detection centerpoint_detection.launch
 ```
 
 ```bash
-rosbag play 61.bag
+rosbag play <rosbag.bag>
 ```
 
 ## Reference
