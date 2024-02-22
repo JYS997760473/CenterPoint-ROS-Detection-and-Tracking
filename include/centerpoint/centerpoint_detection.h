@@ -9,6 +9,9 @@
 
 #include "centerpoint/centerpoint.h"
 #include "centerpoint/common.h"
+#include "tracking/base_tracking_worker.h"
+#include "tracking/tracking_worker_manager.hpp"
+#include "common/types/type.h"
 
 #include "cuda_runtime.h"
 
@@ -27,6 +30,9 @@ class CenterPointDetection {
   std::string lidar_pointcloud_topic_;
   ros::Publisher pub_boxes_;
   ros::Publisher pub_texts_;
+  std::string tracking_ns_ = "tracking";
+  autosense::TrackingWorkerParams tracking_worker_params_;
+  std::unique_ptr<autosense::tracking::BaseTrackingWorker> tracking_worker_;
 
   Params params_;
   cudaStream_t stream_ = NULL;
@@ -44,4 +50,5 @@ class CenterPointDetection {
   void GetInfo(void);
   std::unique_ptr<std::vector<float>> pclToArray(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr& pc_ptr);
   void publishObjectsMarkers(const std::vector<Bndbox>& bboxes);
+  void getTrackingWorkerParams();
 };

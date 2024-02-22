@@ -60,6 +60,13 @@ CenterPointDetection::CenterPointDetection(std::string model_file, bool verbose,
   points_sub_ = nh_.subscribe(lidar_pointcloud_topic_, 1, &CenterPointDetection::OnPointCloud, this);
   marker_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("/box", 10);
   pub_boxes_ = nh_.advertise<jsk_recognition_msgs::BoundingBoxArray>("/boxes", 1);
+
+  // tracking-----------------------------------
+  tracking_worker_ = autosense::tracking::createTrackingWorker(tracking_worker_params_);
+  if (nullptr == tracking_worker_) {
+    ROS_FATAL("Failed to create tracking_worker_.");
+    abort();
+  }
 }
 
 void CenterPointDetection::OnPointCloud(const sensor_msgs::PointCloud2ConstPtr& msg_ptr) {
@@ -93,7 +100,11 @@ void CenterPointDetection::OnPointCloud(const sensor_msgs::PointCloud2ConstPtr& 
 
   // std::cout << "Bndbox objs: " << centerpoint_ptr_->nms_pred_.size() << std::endl;
 
+  // detection markers
   publishObjectsMarkers(centerpoint_ptr_->nms_pred_);
+
+  // tracking------------------------------------
+  tracking_worker_->track();
   // nms_pred_.clear();
 }
 
@@ -226,4 +237,9 @@ void CenterPointDetection::publishObjectsMarkers(const std::vector<Bndbox>& bbox
 CenterPointDetection::~CenterPointDetection() {
   checkCudaErrors(cudaFree(d_points_));
   checkCudaErrors(cudaStreamDestroy(stream_));
+}
+
+void CenterPointDetection::getTrackingWorkerParams() {
+  std::string tracking_worker_ns = tracking_ns_ + "/TrackingWorker";
+  nh_.getParam(tracking_worker_ns + "/matcher_method_name", tracking_worker_params_.matcher_method_name);
 }
