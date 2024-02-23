@@ -267,14 +267,14 @@ void RobustKalmanFilter::calcUpdateQuality(TrackableObjectConstPtr new_object,
     float update_quality_according_association_score =
         calcUpdateQualityAccordingAssociationScore(new_object);
     // Strategy B: according to point number change
-    float update_quality_according_point_num_change =
-        calcUpdateQualityAccordingPointNumChange(new_object, old_object);
+    // float update_quality_according_point_num_change =
+    //     calcUpdateQualityAccordingPointNumChange(new_object, old_object);
     // Pick a smaller one to control possible filter distraction of noises
     update_quality_ = update_quality_according_association_score;
-    if (update_quality_according_association_score >
-        update_quality_according_point_num_change) {
-        update_quality_ = update_quality_according_point_num_change;
-    }
+    // if (update_quality_according_association_score >
+    //     update_quality_according_point_num_change) {
+    //     update_quality_ = update_quality_according_point_num_change;
+    // }
 }
 
 // Compute update quality according Tracker-Observation match association score
@@ -293,17 +293,17 @@ float RobustKalmanFilter::calcUpdateQualityAccordingAssociationScore(
 }
 
 // Compute update quality according point number change
-float RobustKalmanFilter::calcUpdateQualityAccordingPointNumChange(
-    TrackableObjectConstPtr new_object, TrackableObjectConstPtr old_object) {
-    int new_pt_num = new_object->object_ptr->cloud->size();
-    int old_pt_num = old_object->object_ptr->cloud->size();
-    if (new_pt_num <= 0 || old_pt_num <= 0) {
-        return 0;
-    }
-    float update_quality =
-        1 - fabs(new_pt_num - old_pt_num) / std::max(new_pt_num, old_pt_num);
-    return update_quality;
-}
+// float RobustKalmanFilter::calcUpdateQualityAccordingPointNumChange(
+//     TrackableObjectConstPtr new_object, TrackableObjectConstPtr old_object) {
+//     int new_pt_num = new_object->object_ptr->cloud->size();
+//     int old_pt_num = old_object->object_ptr->cloud->size();
+//     if (new_pt_num <= 0 || old_pt_num <= 0) {
+//         return 0;
+//     }
+//     float update_quality =
+//         1 - fabs(new_pt_num - old_pt_num) / std::max(new_pt_num, old_pt_num);
+//     return update_quality;
+// }
 //----------------------- Adaptive KF update quality -------------------------//
 
 //------ compute measurement(trackable object) velocity&acceleration ---------//
@@ -365,8 +365,8 @@ Eigen::VectorXf RobustKalmanFilter::calcMeasuredBboxCenterVelocity(
     // direction
     Eigen::Vector3d new_size = old_size;
     Eigen::Vector3d new_center = old_center;
-    common::bbox::computeBboxSizeCenter<PointICloudPtr>(
-        new_object->object_ptr->cloud, old_dir, &new_size, &new_center);
+    // common::bbox::computeBboxSizeCenter<PointICloudPtr>(
+    //     new_object->object_ptr->cloud, old_dir, &new_size, &new_center);
 
     Eigen::Vector3f measured_bbox_center_velocity_with_old_dir =
         (new_center - old_center).cast<float>();
@@ -400,8 +400,8 @@ Eigen::VectorXf RobustKalmanFilter::calcMeasuredBboxCornerVelocity(
     // direction
     Eigen::Vector3d new_size = old_size;
     Eigen::Vector3d new_center = old_center;
-    common::bbox::computeBboxSizeCenter<PointICloudPtr>(
-        new_object->object_ptr->cloud, old_dir, &new_size, &new_center);
+    // common::bbox::computeBboxSizeCenter<PointICloudPtr>(
+    //     new_object->object_ptr->cloud, old_dir, &new_size, &new_center);
     Eigen::Vector3d ortho_old_dir(-old_dir(1), old_dir(0), 0.0);
 
     /// @note old and new observation's 4 corners

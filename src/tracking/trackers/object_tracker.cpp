@@ -242,18 +242,18 @@ void ObjectTracker::updateWithoutObservation(const double &time_diff) {
     new_obj->ground_center = current_object_->ground_center + predicted_shift;
 
     // B. update cloud & polygon
-    PointICloudPtr cloud = new_obj->object_ptr->cloud;
-    for (size_t j = 0u; j < cloud->points.size(); ++j) {
-        cloud->points[j].x += predicted_shift[0];
-        cloud->points[j].y += predicted_shift[1];
-        cloud->points[j].z += predicted_shift[2];
-    }
-    PolygonDType &polygon = new_obj->object_ptr->polygon;
-    for (size_t j = 0u; j < polygon.points.size(); ++j) {
-        polygon.points[j].x += predicted_shift[0];
-        polygon.points[j].y += predicted_shift[1];
-        polygon.points[j].z += predicted_shift[2];
-    }
+    // PointICloudPtr cloud = new_obj->object_ptr->cloud;
+    // for (size_t j = 0u; j < cloud->points.size(); ++j) {
+    //     cloud->points[j].x += predicted_shift[0];
+    //     cloud->points[j].y += predicted_shift[1];
+    //     cloud->points[j].z += predicted_shift[2];
+    // }
+    // PolygonDType &polygon = new_obj->object_ptr->polygon;
+    // for (size_t j = 0u; j < polygon.points.size(); ++j) {
+    //     polygon.points[j].x += predicted_shift[0];
+    //     polygon.points[j].y += predicted_shift[1];
+    //     polygon.points[j].z += predicted_shift[2];
+    // }
 
     // C. update filter
     filter_->updateWithoutObservation(time_diff);
@@ -299,18 +299,18 @@ void ObjectTracker::updateWithoutObservation(
     new_obj->ground_center = current_object_->ground_center + predicted_shift;
 
     // B. update cloud & polygon
-    PointICloudPtr cloud = new_obj->object_ptr->cloud;
-    for (size_t j = 0u; j < cloud->points.size(); ++j) {
-        cloud->points[j].x += predicted_shift[0];
-        cloud->points[j].y += predicted_shift[1];
-        cloud->points[j].z += predicted_shift[2];
-    }
-    PolygonDType &polygon = new_obj->object_ptr->polygon;
-    for (size_t j = 0u; j < polygon.points.size(); ++j) {
-        polygon.points[j].x += predicted_shift[0];
-        polygon.points[j].y += predicted_shift[1];
-        polygon.points[j].z += predicted_shift[2];
-    }
+    // PointICloudPtr cloud = new_obj->object_ptr->cloud;
+    // for (size_t j = 0u; j < cloud->points.size(); ++j) {
+    //     cloud->points[j].x += predicted_shift[0];
+    //     cloud->points[j].y += predicted_shift[1];
+    //     cloud->points[j].z += predicted_shift[2];
+    // }
+    // PolygonDType &polygon = new_obj->object_ptr->polygon;
+    // for (size_t j = 0u; j < polygon.points.size(); ++j) {
+    //     polygon.points[j].x += predicted_shift[0];
+    //     polygon.points[j].y += predicted_shift[1];
+    //     polygon.points[j].z += predicted_shift[2];
+    // }
 
     // C. update filter without object
     filter_->updateWithoutObservation(time_diff);
@@ -404,9 +404,9 @@ void ObjectTracker::smoothTrackerOrientation() {
     current_dir.normalize();
     Eigen::Vector3d new_size;
     Eigen::Vector3d new_center;
-    common::bbox::computeBboxSizeCenter<PointICloudPtr>(
-        current_object_->object_ptr->cloud, current_dir.cast<double>(),
-        &new_size, &new_center);
+    // common::bbox::computeBboxSizeCenter<PointICloudPtr>(
+    //     current_object_->object_ptr->cloud, current_dir.cast<double>(),
+    //     &new_size, &new_center);
     current_object_->direction = current_dir;
     current_object_->ground_center = new_center.cast<float>();
     current_object_->size = new_size.cast<float>();

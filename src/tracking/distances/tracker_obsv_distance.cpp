@@ -112,15 +112,16 @@ float TrackerObsvDistance::computeDistance(
         computeDirectionDistance(tracker, tracker_predict, object_obsved);
     // 评估外观一致性: 边框间距+点云数目间距+点云直方图间距
     float bbox_size_dist = computeBboxSizeDistance(tracker, object_obsved);
-    float point_num_dist = computePointNumDistance(tracker, object_obsved);
-    float histogram_dist = computeHistogramDistance(tracker, object_obsved);
+    // float point_num_dist = computePointNumDistance(tracker, object_obsved);
+    // float histogram_dist = computeHistogramDistance(tracker, object_obsved);
 
     // 加权和: 将上述关联特征组合成最终距离测量
     float result_distance = s_location_distance_weight_ * location_dist +
                             s_direction_distance_weight_ * direction_dist +
-                            s_bbox_size_distance_weight_ * bbox_size_dist +
-                            s_point_num_distance_weight_ * point_num_dist +
-                            s_histogram_distance_weight_ * histogram_dist;
+                            s_bbox_size_distance_weight_ * bbox_size_dist;
+                            // +
+                            // s_point_num_distance_weight_ * point_num_dist +
+                            // s_histogram_distance_weight_ * histogram_dist;
     return result_distance;
 }
 
@@ -225,18 +226,18 @@ float TrackerObsvDistance::computeBboxSizeDistance(
 }
 
 // 点云数目距离
-float TrackerObsvDistance::computePointNumDistance(
-    ObjectTrackerConstPtr tracker, TrackableObjectConstPtr object_obsved) {
-    // Compute point num distance for given track & object
-    // range from 0 and 1
-    TrackableObjectConstPtr last_obsv = tracker->current_object_;
-    int old_point_number = last_obsv->object_ptr->cloud->size();
-    int new_point_number = object_obsved->object_ptr->cloud->size();
-    float point_num_distance = fabs(old_point_number - new_point_number) *
-                               1.0f /
-                               std::max(old_point_number, new_point_number);
-    return point_num_distance;
-}
+// float TrackerObsvDistance::computePointNumDistance(
+//     ObjectTrackerConstPtr tracker, TrackableObjectConstPtr object_obsved) {
+//     // Compute point num distance for given track & object
+//     // range from 0 and 1
+//     TrackableObjectConstPtr last_obsv = tracker->current_object_;
+//     int old_point_number = last_obsv->object_ptr->cloud->size();
+//     int new_point_number = object_obsved->object_ptr->cloud->size();
+//     float point_num_distance = fabs(old_point_number - new_point_number) *
+//                                1.0f /
+//                                std::max(old_point_number, new_point_number);
+//     return point_num_distance;
+// }
 
 /**
  * 点云直方图特征L1距离∑|old_object_shape_features[0...N] -
@@ -244,29 +245,29 @@ float TrackerObsvDistance::computePointNumDistance(
  * TODO How to compute TrackedObject's shape_features
  *  computed by FeatureDescriptor==>(3*bin_size) feature vector
  */
-float TrackerObsvDistance::computeHistogramDistance(
-    ObjectTrackerConstPtr tracker, TrackableObjectConstPtr object_obsved) {
-    // Compute histogram distance for given tracker & obsved object
-    // range from 0 to 3
-    TrackableObjectConstPtr last_obsv = tracker->current_object_;
-    const Feature &old_object_shape_features =
-        last_obsv->object_ptr->shape_features;
-    const Feature &new_object_shape_features =
-        object_obsved->object_ptr->shape_features;
-    if (old_object_shape_features.size() != new_object_shape_features.size()) {
-        ROS_ERROR(
-            "sizes of compared features not matched! ObjectTrackerDistance");
-        return FLT_MAX;
-    }
+// float TrackerObsvDistance::computeHistogramDistance(
+//     ObjectTrackerConstPtr tracker, TrackableObjectConstPtr object_obsved) {
+//     // Compute histogram distance for given tracker & obsved object
+//     // range from 0 to 3
+//     TrackableObjectConstPtr last_obsv = tracker->current_object_;
+//     const Feature &old_object_shape_features =
+//         last_obsv->object_ptr->shape_features;
+//     const Feature &new_object_shape_features =
+//         object_obsved->object_ptr->shape_features;
+//     if (old_object_shape_features.size() != new_object_shape_features.size()) {
+//         ROS_ERROR(
+//             "sizes of compared features not matched! ObjectTrackerDistance");
+//         return FLT_MAX;
+//     }
 
-    float histogram_distance = 0.0;
-    for (size_t i = 0u; i < old_object_shape_features.size(); ++i) {
-        histogram_distance += std::fabs(old_object_shape_features.at(i).value -
-                                        new_object_shape_features.at(i).value);
-    }
+//     float histogram_distance = 0.0;
+//     for (size_t i = 0u; i < old_object_shape_features.size(); ++i) {
+//         histogram_distance += std::fabs(old_object_shape_features.at(i).value -
+//                                         new_object_shape_features.at(i).value);
+//     }
 
-    return histogram_distance;
-}
+//     return histogram_distance;
+// }
 
 }  // namespace tracking
 }  // namespace autosense

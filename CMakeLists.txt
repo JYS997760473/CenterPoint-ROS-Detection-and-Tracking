@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   pcl_ros
   pcl_conversions
+  std_msgs
   tf
 )
 
@@ -77,21 +78,39 @@ link_directories(
   ${PCL_LIBRARY_DIRS}
 )
 
-#--------- pointpillars_detection_lib --------------
+#--------------------tracking lib----------------------
+add_library(tracking_lib 
+            src/tracking/hm_tracking_worker.cpp
+            src/tracking/distances/tracker_obsv_distance.cpp
+            src/tracking/filters/robust_kalman_filter.cpp
+            src/tracking/matchers/hungarian_tracker_obsv_matcher.cpp
+            src/tracking/trackers/multi_object_tracker.cpp
+            src/tracking/trackers/object_tracker.cpp
+            common/src/algos/hungarian_bigraph_matcher.cpp
+)
+target_link_libraries(tracking_lib 
+              ${catkin_LIBRARIES}
+              ${PCL_LIBRARIES} )
+
+#--------- centerpoint_detection_lib --------------
 add_library(centerpoint_detection_lib
-  src/centerpoint_detection.cpp
+    src/centerpoint_detection.cpp
 )
 target_link_libraries(centerpoint_detection_lib
-  centerpoint
-  ${catkin_LIBRARIES}
-  ${PCL_LIBRARIES}
+    centerpoint
+    tracking_lib
+    ${catkin_LIBRARIES}
+    ${PCL_LIBRARIES}
 )
 
-#--------- pointpillars_detection node executable -----------
+#--------- detection and tracking node executable -----------
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  tracking_lib
   centerpoint_detection_lib
   ${PCL_LIBRARIES} 
   ${LINK_LIBRARY}
 )
+
+

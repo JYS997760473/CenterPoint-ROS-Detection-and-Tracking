@@ -215,8 +215,8 @@ class RobustKalmanFilter : public BaseFilter {
     // @params[IN] old_object: old object for last updaitng
     // @params[IN] new_object: new object for current updating
     // @return update quality according point number change
-    float calcUpdateQualityAccordingPointNumChange(
-        TrackableObjectConstPtr new_object, TrackableObjectConstPtr old_object);
+    // float calcUpdateQualityAccordingPointNumChange(
+    //     TrackableObjectConstPtr new_object, TrackableObjectConstPtr old_object);
     //---------------------- Adaptive KF update quality ----------------------//
     //---------------------------- predit & update ---------------------------//
 

@@ -135,27 +135,27 @@ static void transformPointCloud(
  * @params[OUT] obj: object for transfromation
  * @return nothing
  */
-static void transformBuiltObject(const Eigen::Matrix4d& pose, ObjectPtr obj) {
-    /*Eigen::Vector3d& dir = obj->direction;
-    dir = (pose * Eigen::Vector4d(dir[0], dir[1], dir[2], 0)).head(3);*/
-    transformDirection(pose, &(obj->direction));
-    // transform center
-    transformGroundBox(pose, &(obj->ground_center));
-    /*Eigen::Vector3d& center = obj->ground_center;
-    center = (pose * Eigen::Vector4d(center[0], center[1], center[2],
-    1)).head(3);*/
-    // transform cloud & polygon
-    transformPointCloud<PointI>(pose, obj->cloud);
-    // PointDCloudPtr polygon(&((*obj)->polygon));
-    transformPointCloud<PointD>(pose, obj->polygon);
-}
+// static void transformBuiltObject(const Eigen::Matrix4d& pose, ObjectPtr obj) {
+//     /*Eigen::Vector3d& dir = obj->direction;
+//     dir = (pose * Eigen::Vector4d(dir[0], dir[1], dir[2], 0)).head(3);*/
+//     transformDirection(pose, &(obj->direction));
+//     // transform center
+//     transformGroundBox(pose, &(obj->ground_center));
+//     /*Eigen::Vector3d& center = obj->ground_center;
+//     center = (pose * Eigen::Vector4d(center[0], center[1], center[2],
+//     1)).head(3);*/
+//     // transform cloud & polygon
+//     transformPointCloud<PointI>(pose, obj->cloud);
+//     // PointDCloudPtr polygon(&((*obj)->polygon));
+//     transformPointCloud<PointD>(pose, obj->polygon);
+// }
 
-static void transformBuiltObjects(const Eigen::Matrix4d& transform_to_mat,
-                                  std::vector<ObjectPtr>* objects) {
-    for (size_t i = 0u; i < (*objects).size(); ++i) {
-        transformBuiltObject(transform_to_mat, (*objects)[i]);
-    }
-}
+// static void transformBuiltObjects(const Eigen::Matrix4d& transform_to_mat,
+//                                   std::vector<ObjectPtr>* objects) {
+//     for (size_t i = 0u; i < (*objects).size(); ++i) {
+//         transformBuiltObject(transform_to_mat, (*objects)[i]);
+//     }
+// }
 
 }  // namespace transform
 }  // namespace common

@@ -88,18 +88,18 @@ class ObjectTracker {
         expected_obj->direction = current_object_->direction;
 
         // B. update cloud & polygon
-        PointICloudPtr cloud = expected_obj->object_ptr->cloud;
-        for (size_t j = 0u; j < cloud->points.size(); ++j) {
-            cloud->points[j].x += predicted_shift[0];
-            cloud->points[j].y += predicted_shift[1];
-            cloud->points[j].z += predicted_shift[2];
-        }
-        PolygonDType &polygon = expected_obj->object_ptr->polygon;
-        for (size_t j = 0u; j < polygon.points.size(); ++j) {
-            polygon.points[j].x += predicted_shift[0];
-            polygon.points[j].y += predicted_shift[1];
-            polygon.points[j].z += predicted_shift[2];
-        }
+        // PointICloudPtr cloud = expected_obj->object_ptr->cloud;
+        // for (size_t j = 0u; j < cloud->points.size(); ++j) {
+        //     cloud->points[j].x += predicted_shift[0];
+        //     cloud->points[j].y += predicted_shift[1];
+        //     cloud->points[j].z += predicted_shift[2];
+        // }
+        // PolygonDType &polygon = expected_obj->object_ptr->polygon;
+        // for (size_t j = 0u; j < polygon.points.size(); ++j) {
+        //     polygon.points[j].x += predicted_shift[0];
+        //     polygon.points[j].y += predicted_shift[1];
+        //     polygon.points[j].z += predicted_shift[2];
+        // }
     }
 
     // @brief update tracker with object

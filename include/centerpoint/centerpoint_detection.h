@@ -7,11 +7,13 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <ros/ros.h>
 
+#include <std_msgs/ColorRGBA.h>
+
 #include "centerpoint/centerpoint.h"
 #include "centerpoint/common.h"
+#include "common/types/type.h"
 #include "tracking/base_tracking_worker.h"
 #include "tracking/tracking_worker_manager.hpp"
-#include "common/types/type.h"
 
 #include "cuda_runtime.h"
 
@@ -30,6 +32,7 @@ class CenterPointDetection {
   std::string lidar_pointcloud_topic_;
   ros::Publisher pub_boxes_;
   ros::Publisher pub_texts_;
+  ros::Publisher tracking_objs_pub_;
   std::string tracking_ns_ = "tracking";
   autosense::TrackingWorkerParams tracking_worker_params_;
   std::unique_ptr<autosense::tracking::BaseTrackingWorker> tracking_worker_;
@@ -51,4 +54,8 @@ class CenterPointDetection {
   std::unique_ptr<std::vector<float>> pclToArray(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr& pc_ptr);
   void publishObjectsMarkers(const std::vector<Bndbox>& bboxes);
   void getTrackingWorkerParams();
+  void createObjectFromBndbox(std::vector<autosense::ObjectPtr>* objects);
+  void publishTrackingObjects(std::vector<autosense::ObjectPtr>& objs);
+  void publishObjectsMarkersLines(const ros::Publisher& publisher, const std_msgs::Header& header,
+                                  const std_msgs::ColorRGBA& color, const std::vector<autosense::ObjectPtr>& objects_array);
 };

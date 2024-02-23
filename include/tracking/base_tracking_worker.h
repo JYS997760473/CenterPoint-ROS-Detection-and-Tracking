@@ -30,9 +30,9 @@ namespace tracking {
 struct TrackingOptions {
     TrackingOptions() = default;
 
-    explicit TrackingOptions(Eigen::Matrix4d *pose) : velo2world_trans(pose) {}
+    // explicit TrackingOptions(Eigen::Matrix4d *pose) : velo2world_trans(pose) {}
 
-    std::shared_ptr<Eigen::Matrix4d> velo2world_trans;
+    // std::shared_ptr<Eigen::Matrix4d> velo2world_trans;
 
     // TODO(gary): HDMap provided information
     // HdmapStructPtr hdmap = nullptr;

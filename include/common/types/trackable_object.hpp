@@ -48,9 +48,10 @@ struct TrackableObject {
             direction = object_ptr->direction.cast<float>();
 
             // 初始化重心
-            barycenter =
-                common::geometry::getCloudBarycenter<PointI>(object_ptr->cloud)
-                    .cast<float>();
+            // barycenter =
+            //     common::geometry::getCloudBarycenter<PointI>(object_ptr->cloud)
+            //         .cast<float>();
+            barycenter = object_ptr->anchor_point.cast<float>();
 
             // TODO(gary): need HD Map
             // lane_direction = Eigen::Vector3f::Zero();

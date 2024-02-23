@@ -126,17 +126,17 @@ class TrackerObsvDistance {
     // @params[IN] track: track for <track, object> distance computing
     // @params[IN] new_object: recently detected object
     // @return point num distance of given <track, object>
-    static float computePointNumDistance(
-        const ObjectTrackerConstPtr tracker,
-        const TrackableObjectConstPtr object_obsved);
+    // static float computePointNumDistance(
+    //     const ObjectTrackerConstPtr tracker,
+    //     const TrackableObjectConstPtr object_obsved);
 
     // @brief compute histogram distance for given track & object
     // @params[IN] track: track for <track, object> distance computing
     // @params[IN] new_object: recently detected object
     // @return histogram distance of given <track, object>
-    static float computeHistogramDistance(
-        const ObjectTrackerConstPtr tracker,
-        const TrackableObjectConstPtr object_obsved);
+    // static float computeHistogramDistance(
+    //     const ObjectTrackerConstPtr tracker,
+    //     const TrackableObjectConstPtr object_obsved);
 };  // class TrackerObsvDistance
 
 }  // namespace tracking

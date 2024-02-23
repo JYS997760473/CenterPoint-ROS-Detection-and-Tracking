@@ -24,7 +24,7 @@
 #include "common/common.hpp"     // common::EPSILON
 #include "common/transform.hpp"  // common::transform::transformPointCloud
 
-#include "feature_extractors/base_feature_extractor.hpp"
+// #include "feature_extractors/base_feature_extractor.hpp"
 #include "tracking/base_tracking_worker.h"
 #include "tracking/filters/base_filter.hpp"
 #include "tracking/matchers/base_tracker_obsv_matcher.h"
@@ -199,8 +199,8 @@ class HmTrackingWorker : public BaseTrackingWorker {
 
                 // restore original local Velodyne coordinates
                 // 世界坐标-->局部坐标
-                common::transform::transformPointCloud<PointI>(pose_world2velo,
-                                                               obj->cloud);
+                // common::transform::transformPointCloud<PointI>(pose_world2velo,
+                //                                                obj->cloud);
                 // TODO(gary): restore convex hull of the object
                 /*
                 common::transform::transformPointCloud<PointD>(pose_world2velo,
@@ -237,7 +237,7 @@ class HmTrackingWorker : public BaseTrackingWorker {
     void constructTrackedObjects(
         const std::vector<ObjectPtr> &objects_obsved,
         std::vector<TrackableObjectPtr> *objects_tracked,
-        const Eigen::Matrix4d &pose,
+        // const Eigen::Matrix4d &pose,
         const TrackingOptions &options);
 
     //--------------------- construct trackable objects ----------------------//
@@ -270,7 +270,7 @@ class HmTrackingWorker : public BaseTrackingWorker {
     MatcherType matcher_method_;
     BaseTrackerObsvMatcher *matcher_ = nullptr;
 
-    feature::BaseFeatureExtractor *feature_extractor_ = nullptr;
+    // feature::BaseFeatureExtractor *feature_extractor_ = nullptr;
 
     TrackingWorkerParams params_;
 
