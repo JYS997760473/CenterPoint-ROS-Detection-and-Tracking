@@ -31,8 +31,6 @@ Or can download a demo rosbag from [Google Drive](https://drive.google.com/file/
 
 ## Detection
 
-### Run
-
 ```bash
 roslaunch centerpoint_detection_and_tracking centerpoint_detection.launch
 ```
