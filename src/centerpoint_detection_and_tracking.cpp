@@ -7,7 +7,7 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <visualization_msgs/MarkerArray.h>
 
-#include "centerpoint/centerpoint_detection.h"
+#include "centerpoint/centerpoint_detection_and_tracking.h"
 #include "common/color.hpp"
 #include "common/time.hpp"
 
@@ -22,7 +22,7 @@ std::map<std::string, std::vector<int>> colormap{{"car", {0, 0, 255}},     // do
                                                  {"pedestrian", {255, 0, 0}},
                                                  {"traffic_cone", {0, 0, 255}}};
 
-void CenterPointDetection::GetInfo(void) {
+void CenterPointDetectionAndTracking::GetInfo(void) {
   cudaDeviceProp prop;
 
   int count = 0;
@@ -44,7 +44,7 @@ void CenterPointDetection::GetInfo(void) {
   printf("\n");
 }
 
-CenterPointDetection::CenterPointDetection(std::string model_file, bool verbose, std::string onnx_file) {
+CenterPointDetectionAndTracking::CenterPointDetectionAndTracking(std::string model_file, bool verbose, std::string onnx_file) {
   // initialize PointPillars
   ROS_INFO("Initializing CenterPoint");
   // GPU Info
@@ -60,21 +60,24 @@ CenterPointDetection::CenterPointDetection(std::string model_file, bool verbose,
   nh_.getParam("lidar_pointcloud_topic", lidar_pointcloud_topic_);
   nh_.getParam("marker_frame_id", marker_frame_id_);
   nh_.getParam("score_thre", score_thre_);
+  nh_.getParam("task", task_);
   ROS_INFO_STREAM("lidar topic: " << lidar_pointcloud_topic_);
-  points_sub_ = nh_.subscribe(lidar_pointcloud_topic_, 1, &CenterPointDetection::OnPointCloud, this);
+  points_sub_ = nh_.subscribe(lidar_pointcloud_topic_, 1, &CenterPointDetectionAndTracking::OnPointCloud, this);
   marker_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("/detection", 10);
   tracking_objs_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("/tracking", 10);
   pub_boxes_ = nh_.advertise<jsk_recognition_msgs::BoundingBoxArray>("/boxes", 1);
 
-  // tracking-----------------------------------
-  tracking_worker_ = autosense::tracking::createTrackingWorker(tracking_worker_params_);
-  if (nullptr == tracking_worker_) {
-    ROS_FATAL("Failed to create tracking_worker_.");
-    abort();
+  if (task_ == "detection_and_tracking") {
+    // tracking-----------------------------------
+    tracking_worker_ = autosense::tracking::createTrackingWorker(tracking_worker_params_);
+    if (nullptr == tracking_worker_) {
+      ROS_FATAL("Failed to create tracking_worker_.");
+      abort();
+    }
   }
 }
 
-void CenterPointDetection::OnPointCloud(const sensor_msgs::PointCloud2ConstPtr& msg_ptr) {
+void CenterPointDetectionAndTracking::OnPointCloud(const sensor_msgs::PointCloud2ConstPtr& msg_ptr) {
   const double kTimeStamp = msg_ptr->header.stamp.toSec();
   pcl::PointCloud<pcl::PointXYZI>::Ptr pc_ptr(new pcl::PointCloud<pcl::PointXYZI>);
   pcl::fromROSMsg(*msg_ptr, *pc_ptr);
@@ -109,25 +112,28 @@ void CenterPointDetection::OnPointCloud(const sensor_msgs::PointCloud2ConstPtr& 
   // detection markers
   publishObjectsMarkers(centerpoint_ptr_->nms_pred_);
 
-  // tracking------------------------------------
-  // build Object instances
-  autosense::tracking::TrackingOptions tracking_options;
-  std::vector<autosense::ObjectPtr> obsv_objects;
-  createObjectFromBndbox(&obsv_objects);
-  std::vector<autosense::ObjectPtr> tracking_objects_velo;
-  autosense::common::Clock clock_tracking;
-  tracking_worker_->track(obsv_objects, kTimeStamp, tracking_options, &tracking_objects_velo);
-  ROS_INFO_STREAM("Finish tracking. " << tracking_objects_velo.size() << " Objects Tracked. Took "
-                                      << clock_tracking.takeRealTime() << "ms.");
-  publishTrackingObjects(tracking_objects_velo);
-  std_msgs::Header header;
-  header.frame_id = marker_frame_id_;
-  header.stamp = msg_ptr->header.stamp;
-  publishObjectsMarkersLines(tracking_objs_pub_, header, autosense::common::DARKGREEN.rgbA, tracking_objects_velo);
+  if (task_ == "detection_and_tracking") {
+    // tracking------------------------------------
+    // build Object instances
+    autosense::tracking::TrackingOptions tracking_options;
+    std::vector<autosense::ObjectPtr> obsv_objects;
+    createObjectFromBndbox(&obsv_objects);
+    std::vector<autosense::ObjectPtr> tracking_objects_velo;
+    autosense::common::Clock clock_tracking;
+    tracking_worker_->track(obsv_objects, kTimeStamp, tracking_options, &tracking_objects_velo);
+    ROS_INFO_STREAM("Finish tracking. " << tracking_objects_velo.size() << " Objects Tracked. Took "
+                                        << clock_tracking.takeRealTime() << "ms.");
+    publishTrackingObjects(tracking_objects_velo);
+    std_msgs::Header header;
+    header.frame_id = marker_frame_id_;
+    header.stamp = msg_ptr->header.stamp;
+    publishObjectsMarkersLines(tracking_objs_pub_, header, autosense::common::DARKGREEN.rgbA, tracking_objects_velo);
+  }
   // nms_pred_.clear();
 }
 
-std::unique_ptr<std::vector<float>> CenterPointDetection::pclToArray(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr& pc_ptr) {
+std::unique_ptr<std::vector<float>> CenterPointDetectionAndTracking::pclToArray(
+    const pcl::PointCloud<pcl::PointXYZI>::ConstPtr& pc_ptr) {
   std::unique_ptr<std::vector<float>> points_array(new std::vector<float>(pc_ptr->size() * s_num_point_feature_));
   const float norm_factor = 1.F / s_normalize_intensity_value_;
 
@@ -143,7 +149,7 @@ std::unique_ptr<std::vector<float>> CenterPointDetection::pclToArray(const pcl::
   return std::move(points_array);
 }
 
-void CenterPointDetection::publishObjectsMarkers(const std::vector<Bndbox>& bboxes) {
+void CenterPointDetectionAndTracking::publishObjectsMarkers(const std::vector<Bndbox>& bboxes) {
   visualization_msgs::MarkerArray marker_array;
   visualization_msgs::Marker clear_marker;
   clear_marker.header.frame_id = marker_frame_id_;
@@ -196,17 +202,17 @@ void CenterPointDetection::publishObjectsMarkers(const std::vector<Bndbox>& bbox
   marker_pub_.publish(marker_array);
 }
 
-CenterPointDetection::~CenterPointDetection() {
+CenterPointDetectionAndTracking::~CenterPointDetectionAndTracking() {
   checkCudaErrors(cudaFree(d_points_));
   checkCudaErrors(cudaStreamDestroy(stream_));
 }
 
-void CenterPointDetection::getTrackingWorkerParams() {
+void CenterPointDetectionAndTracking::getTrackingWorkerParams() {
   std::string tracking_worker_ns = tracking_ns_ + "/TrackingWorker";
   nh_.getParam(tracking_worker_ns + "/matcher_method_name", tracking_worker_params_.matcher_method_name);
 }
 
-void CenterPointDetection::createObjectFromBndbox(std::vector<autosense::ObjectPtr>* objects) {
+void CenterPointDetectionAndTracking::createObjectFromBndbox(std::vector<autosense::ObjectPtr>* objects) {
   if (objects == nullptr) {
     return;
   }
@@ -230,7 +236,7 @@ void CenterPointDetection::createObjectFromBndbox(std::vector<autosense::ObjectP
   }
 }
 
-void CenterPointDetection::publishTrackingObjects(std::vector<autosense::ObjectPtr>& objs) {
+void CenterPointDetectionAndTracking::publishTrackingObjects(std::vector<autosense::ObjectPtr>& objs) {
   visualization_msgs::MarkerArray marker_array;
   visualization_msgs::Marker clear_marker;
   clear_marker.header.frame_id = marker_frame_id_;
@@ -280,9 +286,10 @@ void CenterPointDetection::publishTrackingObjects(std::vector<autosense::ObjectP
   tracking_objs_pub_.publish(marker_array);
 }
 
-void CenterPointDetection::publishObjectsMarkersLines(const ros::Publisher& publisher, const std_msgs::Header& header,
-                                                      const std_msgs::ColorRGBA& color,
-                                                      const std::vector<autosense::ObjectPtr>& objects_array) {
+void CenterPointDetectionAndTracking::publishObjectsMarkersLines(const ros::Publisher& publisher,
+                                                                 const std_msgs::Header& header,
+                                                                 const std_msgs::ColorRGBA& color,
+                                                                 const std::vector<autosense::ObjectPtr>& objects_array) {
   // clear all markers before
   visualization_msgs::MarkerArray empty_markers;
   visualization_msgs::Marker clear_marker;

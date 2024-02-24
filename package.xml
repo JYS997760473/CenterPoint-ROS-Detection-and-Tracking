@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>centerpoint_detection</name>
+  <name>centerpoint_detection_and_tracking</name>
   <version>0.0.0</version>
   <description>The CenterPoint 3D detection package</description>
 

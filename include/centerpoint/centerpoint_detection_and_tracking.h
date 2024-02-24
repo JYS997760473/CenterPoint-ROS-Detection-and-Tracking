@@ -17,10 +17,10 @@
 
 #include "cuda_runtime.h"
 
-class CenterPointDetection {
+class CenterPointDetectionAndTracking {
  public:
-  CenterPointDetection(std::string model_file, bool verbose, std::string onnx_file);
-  ~CenterPointDetection();
+  CenterPointDetectionAndTracking(std::string model_file, bool verbose, std::string onnx_file);
+  ~CenterPointDetectionAndTracking();
 
  private:
   ros::NodeHandle nh_;
@@ -36,6 +36,7 @@ class CenterPointDetection {
   std::string tracking_ns_ = "tracking";
   autosense::TrackingWorkerParams tracking_worker_params_;
   std::unique_ptr<autosense::tracking::BaseTrackingWorker> tracking_worker_;
+  std::string task_;
 
   Params params_;
   cudaStream_t stream_ = NULL;

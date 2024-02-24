@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(centerpoint_detection)
+project(centerpoint_detection_and_tracking)
 set(arch ${CMAKE_HOST_SYSTEM_PROCESSOR})
 
 find_package(CUDA REQUIRED)
@@ -94,7 +94,7 @@ target_link_libraries(tracking_lib
 
 #--------- centerpoint_detection_lib --------------
 add_library(centerpoint_detection_lib
-    src/centerpoint_detection.cpp
+    src/centerpoint_detection_and_tracking.cpp
 )
 target_link_libraries(centerpoint_detection_lib
     centerpoint
@@ -102,6 +102,7 @@ target_link_libraries(centerpoint_detection_lib
     ${catkin_LIBRARIES}
     ${PCL_LIBRARIES}
 )
+
 
 #--------- detection and tracking node executable -----------
 add_executable(${PROJECT_NAME} main.cpp)

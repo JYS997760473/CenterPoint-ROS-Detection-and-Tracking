@@ -9,15 +9,15 @@
   </group>
 
   <param name="score_thre" value="0.3"/>
-  <param name="task" value="detection"/>
+  <param name="task" value="detection_and_tracking"/>
 
-  <node pkg="centerpoint_detection_and_tracking" type="centerpoint_detection_and_tracking" name="centerpoint_detection" 
+  <node pkg="centerpoint_detection_and_tracking" type="centerpoint_detection_and_tracking" name="centerpoint_detection_and_tracking" 
     output="screen" args="$(find centerpoint_detection_and_tracking)/model/rpn_centerhead_sim.plan 
       $(find centerpoint_detection_and_tracking)/model/centerpoint.scn.onnx">
   </node>
 
   <node pkg="rviz" name ="nuscenes_rviz" type="rviz"
-        respawn="false" output="screen" args="-d $(find centerpoint_detection_and_tracking)/rviz/detection.rviz"/>
+        respawn="false" output="screen" args="-d $(find centerpoint_detection_and_tracking)/rviz/detection_and_tracking.rviz"/>
 
 
 </launch>
